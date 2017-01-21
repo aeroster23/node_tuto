@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>MEAN Stack Tuto</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="./angular.min.js"></script>
+    <script src="./angular-route.min.js"></script>
+    <script>
+      var app = angular.module('app', ['ngRoute']);
+
+    app.config(function($routeProvider){
+      $routeProvider.when('/', {
+        controller: 'HomeController',
+        controllerAs: 'vm',
+        templateUrl: './home.html'
+      });
+      $routeProvider.otherwise('/');
+    });
+
+    app.controller('HomeController', function($http){
+      var vm = this;
+
+      vm.users = [];
+
+      vm.detailedUser;
+
+      vm.showDetails = function(user){
+        vm.detailedUser = user;
+        vm.detailed = true;
+      };
+
+      vm.getUsers = function(){
+        $http.get('/api/users').then(function(response){
+          vm.users = response.data;
+        });
+      };
+      vm.getUsers();
+
+      vm.updateUser = function(user){
+        if(user){
+          $http.put('/api/users', user).then(function(response){
+            vm.getUsers();
+          });
+        }
+      }
+      vm.removeUser = function(user){
+        if(user){
+          $http.delete('/api/users/' + user._id).then(function(response){
+            vm.getUsers();
+          });
+        }
+      };
+
+      vm.addUser = function(user){
+        if(user && user.name && user.age){
+          console.log('About to create user');
+          $http.post('/api/users', user).then(function(response){
+            vm.getUsers();
+            vm.user = '';
+            vm.adduser = false;
+          });
+        }
+        else{
+          console.log('You have not supplied enough details');
+        }
+      };
+
+    });
+  </script>
+  </head>
+  <body>
+      <div class="container">
+          <div class="col-md-12">
+            <div ng-view></div>
+          </div>
+      </div>
+  </body>
+</html>
