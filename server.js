@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /***********************************************************/
 
 // Creating of the database
+// Change URL when deploying app
 var db = "mongodb://localhost/mean_stack_tuto";
 
 // Connection to MongoDB
